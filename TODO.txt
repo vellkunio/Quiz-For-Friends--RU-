@@ -1,0 +1,6 @@
+1. Add fonts
+2. Array of questions
+3. Card that displays question
+4. Buttons Next and Prev
+5. Add bg color
+6. Maybe make it glassmorphism style
