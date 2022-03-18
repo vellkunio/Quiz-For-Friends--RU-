@@ -1,6 +1,11 @@
 import { Button } from '@material-ui/core';
 import React, { Component } from 'react';
 import Card from './Card';
+import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import CreateQuestion from './CreateQuestion';
+
+axios.defaults.baseURL = 'https://us-central1-vellkunioquizfunctions.cloudfunctions.net/api';
 
 
 
@@ -14,11 +19,11 @@ class Main extends Component {
       questions: [
         {
           hint: 'Разогрев',
-          text: `Когда ты в полседний раз плакал?`
+          text: `When did you cry last time?`
         },
         {
           hint: 'Разогрев',
-          text: `Насколько сильно ты можешь нарушить закон?`
+          text: `How bad can you break the law?`
         },
         {
           hint: 'Разогрев',
@@ -219,35 +224,25 @@ class Main extends Component {
         },
         {
           hint: 'Кастомные',
-          text: `Вы бы предпочли погребение или кремацию `
+          text: `Do you prefer to be barried or burned`
         },
         {
           hint: 'Кастомные',
-          text: `Вы довольны своей жизнью прямо сейчас?`
+          text: `Are you happy with your life right now?`
         }
-        
-        // ,{
-          
-        //   hint: 'Thank you!',
-        //   text: `Just wanted to thank Sam
-        //   and his team for an
-        //   excellent service and
-        //   perfect tile installation.
-        //   I have been working with
-        //   Lirioplan for many years
-        //   now and it is the only
-        //   company I trust in Ontario`
-        // }
-          
+
         ],
-        questionNumber: 0
+        questionss: null,
+        questionNumber: 0,
+        isStartDisabled: false,
+        isLoading: false
       }
     }
 
     prevQ = e => {
       if(this.state.questionNumber === 0){
         this.setState({
-          questionNumber: this.state.questions.length-1
+          questionNumber: this.state.questionss.length-1
         })
       } else{
         this.setState({
@@ -257,7 +252,7 @@ class Main extends Component {
     }
 
     nextQ = e => {
-      if(this.state.questionNumber === this.state.questions.length-1){
+      if(this.state.questionNumber === this.state.questionss.length-1){
         this.setState({
           questionNumber: 0
         })
@@ -268,9 +263,32 @@ class Main extends Component {
       }
     }
 
+    onStartBtn = e => {
+      console.log('Loading Started');
+      this.setState({
+        isStartDisabled: true,
+        isLoading: true
+      })
+      axios.get('questions')
+      .then(res => {
+        this.setState({
+          questionss: res.data,
+          isStartDisabled: false
+        })
+      })
+      .catch(err => console.log(err));
+      this.setState({
+        isStartDisabled: false,
+        isLoading: false
+      })
+      console.log('Loading Stopped');
+    }
+
   render() {
 
-    console.log(this.state.questionNumber);
+    if(this.state.questionss != null){
+      console.log(this.state.questionss);
+    }
 
 
 
@@ -278,29 +296,49 @@ class Main extends Component {
       <div className='mainDiv'> 
         <div className='wrapper'>
 
-          <div class="base one"></div>
-          <div class="base two"></div>
-          <div class="base three"></div>
+        <CreateQuestion />
+
+          {/* <div className="base one"></div>
+          <div className="base two"></div>
+          <div className="base three"></div> */}
 
           
           {/* Hello */}
-          <Card style={{marginLeft: 'auto', marginRight: 'auto',
-                alignItems: 'center', textAlign: 'center'}} 
-          question={this.state.questions[this.state.questionNumber]} key={this.state.questionNumber} 
-          qnum={this.state.questionNumber}
-          />
+          {this.state.questionss ? (
+            <div>
+              <Card style={{marginLeft: 'auto', marginRight: 'auto',
+              alignItems: 'center', textAlign: 'center'}} 
+              question={this.state.questionss[this.state.questionNumber]} key={this.state.questionNumber} 
+              qnum={this.state.questionNumber}
+              />
 
-          <Button style={{position: 'absolute', left: '35px', marginTop: '20px',
-            fontSize: '24px', WebkitBackdropFilter: 'blur(50px)', borderRadius:'10px'}}
-            onClick={this.prevQ}  variant="outlined" size="large" 
-          >Назад</Button>
+              <Button style={{position: 'absolute', left: '35px', marginTop: '20px',
+                fontSize: '24px', WebkitBackdropFilter: 'blur(50px)', borderRadius:'10px'}}
+                onClick={this.prevQ}  variant="outlined" size="large" 
+              >PREV</Button>
 
-          <Button style={{position: 'absolute', right: '35px', marginTop: '20px', 
-            fontSize: '24px', WebkitBackdropFilter: 'blur(50px)', borderRadius:'10px'}}
-            onClick={this.nextQ}  variant="outlined" size="large"
-          >Вперед</Button>
-          
+              <Button style={{position: 'absolute', right: '35px', marginTop: '20px', 
+                fontSize: '24px', WebkitBackdropFilter: 'blur(50px)', borderRadius:'10px'}}
+                onClick={this.nextQ}  variant="outlined" size="large"
+              >NEXT</Button>
+            </div>
+          ) : (
+            <div>
+              <Button style={{position: 'relative', left:'auto', right:'auto', marginTop: '40vh', marginBottom: '50vh',
+              // marginTop: '20px', 
+              fontSize: '24px', WebkitBackdropFilter: 'blur(50px)', borderRadius:'10px'}}
+              onClick={this.onStartBtn} variant="outlined" size="large" disabled={this.state.isStartDisabled}
+              >Start</Button>
+
+              {this.state.isLoading && (
+                  <CircularProgress size={40} thickness={2} color='secondary' style={{marginBottom: '3px'}}/>
+              )}
+            
+            </div>
+          )}
+
         </div>
+
       </div>
     );
   }

@@ -35,7 +35,7 @@ import { Container } from '@material-ui/core';
                 <h1 style={{
                     fontSize: '28px'
                 }}>
-                    Вопрос № {qnum + 1}
+                    Question № {qnum + 1}
                 </h1>
                 {/* <h2 sx={{ mb: 1.5 }} color="text.secondary">
                     {hint}
