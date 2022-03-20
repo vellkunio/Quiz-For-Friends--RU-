@@ -1,5 +1,7 @@
 ## Quiz Game For Friends and Strangers
 
+[<h4> Live version - VellkunioQuiz.web.app </h4>](https://vellkunioquiz.web.app/)
+
 #### The point of this Web Application is to get some fun while being in company of friends. I made this app for myself and my friends and will be happy if someone would play it too.
 
 #### There are a lot of very sophisticated and crazy questions to get to know everybody from another angle. Enjoy! :)
